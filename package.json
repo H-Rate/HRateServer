@@ -19,6 +19,7 @@
     "lint:all": "npm run tsc:no-emit && npm run lint"
   },
   "dependencies": {
+    "@hapi/boom": "^9.1.0",
     "@koa/cors": "^3.1.0",
     "@koa/router": "^9.4.0",
     "@types/node": "^14.14.2",
@@ -32,11 +33,13 @@
     "koa-compress": "^5.0.1",
     "koa-helmet": "^6.0.0",
     "koa-json": "^2.0.2",
+    "koa-jwt": "^4.0.0",
     "koa-logger": "^3.2.1",
     "koa-requestid": "^2.1.0",
     "lodash": "^4.17.20",
     "mongodb": "^3.6.2",
     "mongoose": "^5.10.10",
+    "nanoid": "^3.1.16",
     "utility-types": "^3.10.0",
     "winston": "^3.3.3",
     "winston-console-format": "^1.0.8"

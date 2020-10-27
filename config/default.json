@@ -1,0 +1,14 @@
+{
+  "server": {
+    "port": 8000,
+    "proxy": false,
+    "keys": ["[unset]"]
+  },
+  "mongo": {
+    "uri": "mongodb://localhost:27017/watchserver"
+  },
+  "jwt": {
+    "secret": "[unset]",
+    "expiresIn": 604800
+  }
+}

@@ -1,4 +1,4 @@
-export { DeviceModel, DeviceDocument } from '../models'
+import { DeviceModel, DeviceDocument } from '../models'
 import type { Device } from '../../specs/device'
 import * as _ from 'lodash'
 import type { ClientSession, ModelUpdateOptions, SaveOptions } from 'mongoose'
@@ -9,9 +9,7 @@ export const createDeviceProps = [
   'deviceId'
 ] as const
 
-export const updateDeviceProps = [
-  'subscribers'
-] as const
+export const updateDeviceProps = ['token','ttl'] as const
 
 export type CreateDeviceProps = Optional<
   Pick<Required<Device>, typeof createDeviceProps[number]>
@@ -25,7 +23,7 @@ const ops = make(DeviceModel, {
   update: updateDeviceProps,
 })
 
-export const createRegistration = async (
+export const registerDevice = async (
   data: CreateDeviceProps,
   { session }: SaveOptions = {},
 ): Promise<DeviceDocument> => {
@@ -37,5 +35,19 @@ export const findDeviceById = async (
   options: FindOptions = {},
 ): Promise<DeviceDocument | null> => {
   return ops.findById({}, id, options)
+}
+
+export const findDeviceByDeviceId = async (
+  deviceId: DeviceDocument['deviceId'],
+  options: FindOptions = {},
+): Promise<DeviceDocument | null> => {
+  return ops.findOne({}, {deviceId}, options)
+}
+
+export const updateDevice = async (
+  doc: DeviceDocument,
+  data: UpdateRDeviceProps,
+): Promise<DeviceDocument | null> => {
+  return ops.update({},doc,data)
 }
 

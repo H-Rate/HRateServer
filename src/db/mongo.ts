@@ -3,6 +3,8 @@ import type { TransactionOptions } from 'mongodb'
 import mongoose, { ClientSession } from 'mongoose'
 import logger from '../util/logger'
 
+mongoose.set('debug', true);
+
 export const connect = async (uri: string): Promise<void> => {
   await mongoose.connect(uri, {
     useNewUrlParser: true,
