@@ -1,6 +1,7 @@
 import config from 'config'
 import jwt from 'jsonwebtoken'
-import type { DeviceDocument } from '../db/models'
+import type { ApplicationDocument, DeviceDocument } from '../db/models'
+import type {Users} from '../specs/common'
 
 export type JWTPayload = {
   user: {
@@ -9,16 +10,14 @@ export type JWTPayload = {
   iat: number
 }
 
-const createPayload = (user: DeviceDocument): JWTPayload => ({
-  user: {
-    type: 'device',
-  },
+const createPayload = (type:Users): JWTPayload => ({
+  user: {type},
   iat: Date.now(), // issued at
 })
 
 const createJwtImpl = (
   payload: JWTPayload,
-  userId: DeviceDocument['id'],
+  userId: DeviceDocument['id'] | ApplicationDocument['id'],
   jwtid: string,
 ): string => {
   const expiresIn = config.get('jwt.expiresIn') as number
@@ -29,6 +28,6 @@ const createJwtImpl = (
   })
 }
 
-export const createJwt = (user: DeviceDocument, jwtid: string): string => {
-  return createJwtImpl(createPayload(user), user.id, jwtid)
+export const createJwt = (user: DeviceDocument | ApplicationDocument,type:Users,jwtid: string): string => {
+  return createJwtImpl(createPayload(type), user.id, jwtid)
 }

@@ -9,3 +9,12 @@ export type Url = string
 export const ref = (ref: string): Joi.StringSchema =>
   Joi.string().meta({ _mongoose: { type: 'ObjectId', ref: ref } })
 
+export enum Users {
+  DEVICE = 'device',
+  APP = 'application'
+}
+
+export const allUsers = [
+  Users.DEVICE,
+  Users.APP
+] as const

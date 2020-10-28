@@ -10,6 +10,7 @@ import type { Controller } from '../middlewares/simple-controller'
 import { nanoid } from 'nanoid'
 import {createJwt} from '../lib/jwt'
 import { toPlainData } from '../util/sanitize'
+import {Users} from '../specs/common'
 
 const UpdateDeviceSchema = util.forkWith(
   DeviceSchema,
@@ -26,7 +27,7 @@ export const RegisterDeviceSchema = util.forkWith(
 const registerDevice: Controller = async ({ data }) => {
   const device =  toPlainData(await lib.registerDevice(data))
   const jwtid = nanoid()
-  const token = createJwt(device, jwtid)
+  const token = createJwt(device,Users.DEVICE, jwtid)
   return {jwt:token}
 }
 

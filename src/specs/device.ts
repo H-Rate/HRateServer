@@ -13,7 +13,7 @@ export interface Device {
 
 export const DeviceSchema = Joi.object({
   deviceId: Joi.string().required(),
-  token: Joi.string().optional().default(TOKENDEFAULT),
+  token: Joi.string().optional().min(5).max(5).default(TOKENDEFAULT),
   ttl: Joi.string().isoDate().allow(null).default(null),
 })
 

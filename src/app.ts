@@ -17,7 +17,7 @@ const app = new Koa()
 app.proxy = config.get('server.proxy')
 app.keys = config.get('server.keys')
 
-const publicConfig = ['/device/',]
+const publicConfig = ['/device/','/application/','/application/auth/']
 
 app.use(logger())
 app.use(helmet())
