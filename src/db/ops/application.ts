@@ -4,9 +4,10 @@ import * as _ from 'lodash'
 import type { SaveOptions } from 'mongoose'
 import make, { FindOptions } from './make'
 import type { Optional, Required } from 'utility-types'
+import { Subscription } from '@google-cloud/pubsub'
 
 export const createApplicationProps = [
-  'username','password','name'
+  'username','password','name','subscriptionName','deviceType'
 ] as const
 
 export const updateApplicationProps = ['username','name','password'] as const
@@ -51,3 +52,15 @@ export const updateApplication = async (
   return ops.update({},doc,data)
 }
 
+export const findBySubscriptionNames = async (
+  SubscriptionNames:ApplicationDocument['SubscriptionName'][]
+): Promise<ApplicationDocument[]> =>{
+  return ops.find({},{subscriptionName:{$in:SubscriptionNames}},{select:'name subscriptionName'})
+}
+
+
+export const deleteApplication = async (
+  doc:ApplicationDocument
+): Promise<ApplicationDocument[]> =>{
+  return ops.delete({},doc)
+}

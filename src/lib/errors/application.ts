@@ -8,3 +8,10 @@ export class InvalidPasswordError extends Error {
     super('password is not valid')
   }
 }
+
+export class ApplicationNotFoundError extends Error {
+  constructor(appId) {
+    super(`Application not found ${appId}`)
+  }
+}
+

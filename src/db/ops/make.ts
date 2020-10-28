@@ -4,23 +4,28 @@ import * as context from '../../context'
 import _ from 'lodash'
 
 export type FindOneOptions = {
-  populate?: Record<string, unknown>[]
+  populate?: Record<string, unknown>[],
+  select?: string
 }
 
 export type FindOptions = {
   sort?: string
   limit?: number
   skip?: number
-  populate?: Record<string, unknown>[]
+  populate?: Record<string, unknown>[],
+  select?: string
 }
 
 const findDocumentById = async <Doc extends Document, M extends Model<Doc>>(
   ctx: context.Context,
   model: M,
   id: Doc['id'],
-  { populate }: FindOneOptions,
+  { populate,select }: FindOneOptions,
 ): Promise<Doc | null> => {
   const q = model.findById(id).session(ctx.session)
+  if (!isEmpty(select)) {
+    q.select(select)
+  }
   if (!isEmpty(populate)) {
     populate.forEach(p => q.populate(p))
   }
@@ -31,9 +36,12 @@ const findOneDocument = async <Doc extends Document, M extends Model<Doc>>(
   ctx: context.Context,
   model: M,
   query: FilterQuery<Doc>,
-  { populate }: FindOneOptions,
+  { populate,select }: FindOneOptions,
 ): Promise<Doc> => {
   const q = model.findOne(query).session(ctx.session)
+  if (!isEmpty(select)) {
+    q.select(select)
+  }
   if (!isEmpty(populate)) {
     populate.forEach(p => q.populate(p))
   }
@@ -44,7 +52,7 @@ const findDocuments = async <Doc extends Document, M extends Model<Doc>>(
   ctx: context.Context,
   model: M,
   query: FilterQuery<Doc>,
-  { limit, skip, sort, populate }: FindOptions,
+  { limit, skip, sort, populate,select }: FindOptions,
 ): Promise<Doc[]> => {
   const q = model.find(query).session(ctx.session)
   if (sort) {
@@ -55,6 +63,9 @@ const findDocuments = async <Doc extends Document, M extends Model<Doc>>(
   }
   if (limit) {
     q.limit(limit)
+  }
+  if (!isEmpty(select)) {
+    q.select(select)
   }
   if (!isEmpty(populate)) {
     populate.forEach(p => q.populate(p))

@@ -18,7 +18,7 @@ const UpdateApplicationSchema = util.forkWith(
 
 export const CreateApplicationSchema = util.forkWith(
   ApplicationSchema,
-  lib.createApplicationProps,
+  _.without(lib.createApplicationProps,'subscriptionName'),
   lib.createApplicationProps,
 )
 
@@ -39,10 +39,19 @@ const authApplication: Controller = async ({ data }) => {
   return {jwt:token}
 }
 
+const getMyApp:Controller = async({state}) =>{
+  return lib.findApplicationById(state.user.sub)
+}
+
+const deleteMyApp:Controller = async({state}) =>{
+  return lib.deleteApplication(state.user.sub)
+}
+
 
 export default resource({
   publicProps: [
     'name',
+    'deviceType'
   ],
   params: {
     application: objectIdOrNull(lib.findApplicationById),
@@ -62,6 +71,15 @@ export default resource({
         ctrl: authApplication,
       },
       publicProps:['jwt']
+    },
+    {
+      path: '/@me',
+      get: {
+        ctrl: getMyApp,
+      },
+      delete: {
+        ctrl: deleteMyApp,
+      },
     }
   ],
 })

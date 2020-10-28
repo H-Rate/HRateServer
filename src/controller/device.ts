@@ -22,6 +22,14 @@ export const RegisterDeviceSchema = util.forkWith(
   lib.createDeviceProps,
 )
 
+export const ConnectDeviceSchema  = Joi.object({
+  token:Joi.string().required(),
+})
+
+export const RemoveDeviceSubscriberSchema  = Joi.object({
+  subscriber:Joi.string().required(),
+})
+
 
 const registerDevice: Controller = async ({ data }) => {
   const device =  await lib.registerDevice(data)
@@ -36,6 +44,22 @@ const generateToken: Controller = async ({ state }) => {
 
 const getMyDevice: Controller = async ({ state }) => {
   return lib.findDeviceById(state.user.sub)
+}
+
+const connectToDevice: Controller = async ({ state,data }) => {
+  return lib.connect(data.token,state.user.sub)
+}
+
+const getMySubscribers: Controller = async ({ state,data }) => {
+  return lib.getDeviceSubscribers(state.user.sub)
+}
+
+const removeSubscriber: Controller = async ({ state,data }) => {
+  return lib.removeDeviceSubscriber(state.user.sub,data.subscriber)
+}
+
+const deleteMyDevice: Controller = async ({ state }) => {
+  return lib.deleteDevice(state.user.sub)
 }
 
 export default resource({
@@ -68,9 +92,24 @@ export default resource({
       ],
     },
     {
+      path: '/connect',
+      post: {
+        schema: ConnectDeviceSchema,
+        ctrl: connectToDevice,
+        //permission:[isApp] check if jwt.user.type is app
+      },
+      publicProps: [
+        'topicName',
+        'subscriptionName',
+      ],
+    },
+    {
       path: '/@me',
       get: {
         ctrl: getMyDevice,
+      },
+      delete:{
+        ctrl: deleteMyDevice
       },
       publicProps: [
         'id',
@@ -78,9 +117,33 @@ export default resource({
         'ttl',
         'topicName',
         'createdAt',
-        'updatedAt'
+        'updatedAt',
       ],
-    }
+      //permission:[isdevice] check if jwt.user.type is device
+    },
+    {
+      path: '/@me/subscribers',
+      get: {
+        ctrl: getMySubscribers,
+      },
+      publicProps: [
+        'id',
+        'subscriptions',
+      ],
+      //permission:[isdevice] check if jwt.user.type is device
+    },
+    {
+      path:'/@me/subscribers/remove',
+      patch:{
+        ctrl:removeSubscriber,
+        schema:RemoveDeviceSubscriberSchema
+      },
+      publicProps: [
+        'id',
+        'subscriptions',
+      ],
+      //permission:[isdevice] check if jwt.user.type is device
+    },
   ],
 })
 

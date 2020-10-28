@@ -9,4 +9,7 @@
 *.log
 dump.tar.gz
 .DS_Store
+/watchserver-service.json
+/config/*
+package-lock.json
 

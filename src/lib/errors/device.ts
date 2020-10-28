@@ -9,3 +9,11 @@ export class TokenAliveError extends Error {
     super(`device has a living token`)
   }
 }
+
+export class NoDeviceWithToken extends Error {
+  constructor(token) {
+    super(`No device found with token:${token}`)
+  }
+}
+
+

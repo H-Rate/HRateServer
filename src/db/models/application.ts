@@ -8,6 +8,7 @@ const schema = new Schema(joigoose.convert(ApplicationSchema), {
 })
   .index({ name: 1 }, { unique: 1 })
   .index({ username: 1 }, { unique: 1 })
+  .index({ subscriptionName: 1 }, { unique: 1 })
 
 export type ApplicationDocument = Document<Application>
 export const ApplicationModel = model<ApplicationDocument>('Application', schema)

@@ -4,6 +4,7 @@ import * as _ from 'lodash'
 import type { ClientSession, ModelUpdateOptions, SaveOptions } from 'mongoose'
 import make, { FindOptions } from './make'
 import type { Optional, Required } from 'utility-types'
+import dayjs from 'dayjs'
 
 export const createDeviceProps = [
   'deviceId',
@@ -50,5 +51,19 @@ export const updateDevice = async (
   data: UpdateRDeviceProps,
 ): Promise<DeviceDocument | null> => {
   return ops.update({},doc,data)
+}
+
+export const findDeviceByToken = async(
+  token:DeviceDocument['token'],
+):Promise<DeviceDocument | null> => {
+  const date = dayjs().toDate()
+  return ops.findOne({},{token,ttl:{$gte: date}})
+}
+
+export const deleteDevice = async(
+  doc:DeviceDocument,
+):Promise<DeviceDocument | null> => {
+  const date = dayjs().toDate()
+  return ops.delete({},doc)
 }
 
