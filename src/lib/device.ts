@@ -10,9 +10,18 @@ import { isMongoDuplicateError } from '../db/models/_util'
 import _ from 'lodash'
 import {TOKENDEFAULT} from '../specs'
 import dayjs from 'dayjs'
+import {createTopic} from '../pubsub'
+import { toPlainData } from '../util/sanitize'
+import randtoken from 'rand-token'
 
 const TOKENVALUES = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
 
+const generateToken = (length: number):string =>{
+  const tokenValuesArray = _.split(TOKENVALUES,'');
+  return _.join(_.range(length).map(x=>{
+    return tokenValuesArray[_.random(tokenValuesArray.length)]
+  }),'')
+}
 
 export const registerDevice = async(data:CreateDeviceProps):Promise<DeviceDocument>=>{
   let device: DeviceDocument
@@ -21,28 +30,24 @@ export const registerDevice = async(data:CreateDeviceProps):Promise<DeviceDocume
     return device
   }
 
+  data = {...data,topicName:randtoken.generator({chars: 'A-Z'}).generate(12)}
+
   try{
-    device = await $$registerDevice(data)
+    device = toPlainData(await $$registerDevice(data))
   }catch(err){
     if(isMongoDuplicateError(err)){
       throw new DeviceAlreadyRegisteredError(data.deviceId)
     }
     throw new Error(err)
   }
+  await createTopic(device.topicName)
   return device
-}
-
-const generateToken = ():string =>{
-  const tokenValuesArray = _.split(TOKENVALUES,'');
-  return _.join(_.range(5).map(x=>{
-    return tokenValuesArray[_.random(tokenValuesArray.length)]
-  }),'')
 }
 
 export const generateDeviceToken = async(deviceMongoId:DeviceDocument['id']):Promise<DeviceDocument>=>{
   const device =  await findDeviceById(deviceMongoId)
   if(dayjs().isBefore(dayjs(device.ttl))) throw new TokenAliveError()
-  const token = generateToken()
+  const token = generateToken(5)
   if(token === TOKENDEFAULT)return generateDeviceToken(deviceMongoId)
   try{
     return updateDevice(device,{token,ttl:dayjs().add(5, 'minute').toISOString()})

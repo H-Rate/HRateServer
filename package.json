@@ -19,6 +19,7 @@
     "lint:all": "npm run tsc:no-emit && npm run lint"
   },
   "dependencies": {
+    "@google-cloud/pubsub": "^2.6.0",
     "@hapi/boom": "^9.1.0",
     "@koa/cors": "^3.1.0",
     "@koa/router": "^9.4.0",
@@ -41,6 +42,7 @@
     "mongodb": "^3.6.2",
     "mongoose": "^5.10.10",
     "nanoid": "^3.1.16",
+    "rand-token": "^1.0.1",
     "utility-types": "^3.10.0",
     "winston": "^3.3.3",
     "winston-console-format": "^1.0.8"

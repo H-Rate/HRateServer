@@ -9,7 +9,6 @@ import { objectIdOrNull, fetchPopulators } from '../util/controller'
 import type { Controller } from '../middlewares/simple-controller'
 import { nanoid } from 'nanoid'
 import {createJwt} from '../lib/jwt'
-import { toPlainData } from '../util/sanitize'
 import {Users} from '../specs/common'
 
 const UpdateDeviceSchema = util.forkWith(
@@ -19,13 +18,13 @@ const UpdateDeviceSchema = util.forkWith(
 
 export const RegisterDeviceSchema = util.forkWith(
   DeviceSchema,
-  lib.createDeviceProps,
+  _.without(lib.createDeviceProps,'topicName'),
   lib.createDeviceProps,
 )
 
 
 const registerDevice: Controller = async ({ data }) => {
-  const device =  toPlainData(await lib.registerDevice(data))
+  const device =  await lib.registerDevice(data)
   const jwtid = nanoid()
   const token = createJwt(device,Users.DEVICE, jwtid)
   return {jwt:token}
@@ -42,6 +41,7 @@ const getMyDevice: Controller = async ({ state }) => {
 export default resource({
   publicProps: [
     'id',
+    'topicName',
   ],
   params: {
     device: objectIdOrNull(lib.findDeviceById),
@@ -76,9 +76,12 @@ export default resource({
         'id',
         'token',
         'ttl',
+        'topicName',
         'createdAt',
         'updatedAt'
       ],
     }
   ],
 })
+
+

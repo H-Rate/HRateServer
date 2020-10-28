@@ -28,7 +28,6 @@ export const AuthApplicationSchema = util.forkWith(
   lib.createApplicationProps,
 )
 
-
 const createApplication: Controller = async ({ data }) => {
   return lib.createApplication(data)
 }
@@ -39,8 +38,6 @@ const authApplication: Controller = async ({ data }) => {
   const token = createJwt(application,Users.APP, jwtid)
   return {jwt:token}
 }
-
-
 
 
 export default resource({

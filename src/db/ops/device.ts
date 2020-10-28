@@ -6,7 +6,8 @@ import make, { FindOptions } from './make'
 import type { Optional, Required } from 'utility-types'
 
 export const createDeviceProps = [
-  'deviceId'
+  'deviceId',
+  'topicName'
 ] as const
 
 export const updateDeviceProps = ['token','ttl'] as const
