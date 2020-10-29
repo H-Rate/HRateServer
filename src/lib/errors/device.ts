@@ -17,3 +17,15 @@ export class NoDeviceWithToken extends Error {
 }
 
 
+export class AlreadySubscribedError extends Error {
+  constructor(appId) {
+    super(`app:${appId} has already been subscribed to device`)
+  }
+}
+
+export class SubscriptionNotFoundError extends Error {
+  constructor(name) {
+    super(`SubscriptionName:${name} not found in Application`)
+  }
+}
+

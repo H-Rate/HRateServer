@@ -1,5 +1,6 @@
 import { DeviceModel, DeviceDocument } from '../models'
 import type { Device } from '../../specs/device'
+import {TOKENDEFAULT} from '../../specs/device'
 import * as _ from 'lodash'
 import type { ClientSession, ModelUpdateOptions, SaveOptions } from 'mongoose'
 import make, { FindOptions } from './make'
@@ -65,5 +66,23 @@ export const deleteDevice = async(
 ):Promise<DeviceDocument | null> => {
   const date = dayjs().toDate()
   return ops.delete({},doc)
+}
+
+export const getDevicesWithExpiredTokens = async():Promise<DeviceDocument[]>=>{
+  const date = dayjs().toDate()
+  return ops.find({},{token:{$ne:TOKENDEFAULT},ttl:{$lte: date}})
+}
+
+export const resetTokens = async(docs:DeviceDocument['id'][],{ session }: SaveOptions = {},):Promise<DeviceDocument[]>=>{
+  return DeviceModel.updateMany(
+    { _id: { $in: docs } },
+    { token: TOKENDEFAULT },
+    { runValidators: true, multi: true, session },
+  )
+}
+
+export const getAllTokens = async():Promise<string[]>=>{
+  const devices =  await ops.find({},{token:{$exists:true}})
+  return _.uniq(devices.map(d=>d.token))
 }
 

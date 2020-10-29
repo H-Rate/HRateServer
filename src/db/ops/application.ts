@@ -7,10 +7,10 @@ import type { Optional, Required } from 'utility-types'
 import { Subscription } from '@google-cloud/pubsub'
 
 export const createApplicationProps = [
-  'username','password','name','subscriptionName','deviceType'
+  'username','password','name','deviceType'
 ] as const
 
-export const updateApplicationProps = ['username','name','password'] as const
+export const updateApplicationProps = ['username','name','password','subscriptionNames'] as const
 
 export type CreateApplicationProps = Optional<
   Pick<Required<Application>, typeof createApplicationProps[number]>
@@ -53,9 +53,10 @@ export const updateApplication = async (
 }
 
 export const findBySubscriptionNames = async (
-  SubscriptionNames:ApplicationDocument['SubscriptionName'][]
+  subscriptionNames:ApplicationDocument['SubscriptionName']
 ): Promise<ApplicationDocument[]> =>{
-  return ops.find({},{subscriptionName:{$in:SubscriptionNames}},{select:'name subscriptionName'})
+  const res =  await ops.find({},{subscriptionNames:{$in:subscriptionNames}},{select:'name subscriptionNames'})
+  return res.map(a=> {return {id:a.id, name:a.name,subscriptionNames: _.intersection(a.subscriptionNames,subscriptionNames)}} )
 }
 
 

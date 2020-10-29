@@ -24,7 +24,7 @@ export interface Application {
   username: string,
   password: string,
   name: string,
-  subscriptionName:string,
+  subscriptionNames:string[],
   deviceType: ApplicationDeviceTypes,
 }
 
@@ -32,6 +32,6 @@ export const ApplicationSchema = Joi.object({
   username: Joi.string().required(),
   password: Joi.string().required(),
   name: Joi.string().required(),
-  subscriptionName: Joi.string().min(10).max(10).required(),
+  subscriptionNames: Joi.array().items(Joi.string()).required().default([]),
   deviceType: Joi.string().valid(...allApplicationDevices).required().default(ApplicationDeviceTypes.other)
 })

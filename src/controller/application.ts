@@ -32,6 +32,10 @@ const createApplication: Controller = async ({ data }) => {
   return lib.createApplication(data)
 }
 
+export const unSubscribeSchema  = Joi.object({
+  subscriber:Joi.string().required(),
+})
+
 const authApplication: Controller = async ({ data }) => {
   const application = await lib.authApplication(data)
   const jwtid = nanoid()
@@ -47,11 +51,17 @@ const deleteMyApp:Controller = async({state}) =>{
   return lib.deleteApplication(state.user.sub)
 }
 
+const unSubscribeDevice:Controller = async({state,data}) =>{
+  return lib.unSubscribe(state.user.sub,data.subscriber)
+}
+
+
 
 export default resource({
   publicProps: [
     'name',
-    'deviceType'
+    'deviceType',
+    'subscriptionNames'
   ],
   params: {
     application: objectIdOrNull(lib.findApplicationById),
@@ -80,6 +90,15 @@ export default resource({
       delete: {
         ctrl: deleteMyApp,
       },
+      //permission:[isApp] check if jwt.user.type is app
+    },
+    {
+      path: '/@me/unsubscribe',
+      patch: {
+        ctrl: unSubscribeDevice,
+        schema:unSubscribeSchema
+      },
+      //permission:[isApp] check if jwt.user.type is app
     }
   ],
 })
