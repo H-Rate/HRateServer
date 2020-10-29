@@ -10,6 +10,7 @@ import type { Controller } from '../middlewares/simple-controller'
 import { nanoid } from 'nanoid'
 import {createJwt} from '../lib/jwt'
 import {Users} from '../specs/common'
+import {isApplication} from './conditions'
 
 const UpdateApplicationSchema = util.forkWith(
   ApplicationSchema,
@@ -90,7 +91,7 @@ export default resource({
       delete: {
         ctrl: deleteMyApp,
       },
-      //permission:[isApp] check if jwt.user.type is app
+      permissions:[isApplication]
     },
     {
       path: '/@me/unsubscribe',
@@ -98,7 +99,7 @@ export default resource({
         ctrl: unSubscribeDevice,
         schema:unSubscribeSchema
       },
-      //permission:[isApp] check if jwt.user.type is app
+      permissions:[isApplication]
     }
   ],
 })

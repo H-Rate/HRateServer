@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken'
 import type { ApplicationDocument, DeviceDocument } from '../db/models'
 import type {Users} from '../specs/common'
 
+
 export type JWTPayload = {
   user: {
     type: string

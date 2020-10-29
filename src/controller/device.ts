@@ -10,6 +10,7 @@ import type { Controller } from '../middlewares/simple-controller'
 import { nanoid } from 'nanoid'
 import {createJwt} from '../lib/jwt'
 import {Users} from '../specs/common'
+import {isDevice,isApplication} from './conditions'
 
 const UpdateDeviceSchema = util.forkWith(
   DeviceSchema,
@@ -85,7 +86,7 @@ export default resource({
       path: '/generateToken',
       post: {
         ctrl: generateToken,
-        //permission:[isdevice] check if jwt.user.type is device
+        permissions:[isDevice]
       },
       publicProps: [
         'token',
@@ -96,7 +97,7 @@ export default resource({
       post: {
         schema: ConnectDeviceSchema,
         ctrl: connectToDevice,
-        //permission:[isApp] check if jwt.user.type is app
+        permissions:[isApplication]
       },
       publicProps: [
         'topicName',
@@ -119,7 +120,7 @@ export default resource({
         'createdAt',
         'updatedAt',
       ],
-      //permission:[isdevice] check if jwt.user.type is device
+      permissions:[isDevice]
     },
     {
       path: '/@me/subscribers',
@@ -130,7 +131,7 @@ export default resource({
         'id',
         'subscriptions',
       ],
-      //permission:[isdevice] check if jwt.user.type is device
+      permissions:[isDevice]
     },
     {
       path:'/@me/subscribers/remove',
@@ -142,7 +143,7 @@ export default resource({
         'id',
         'subscriptions',
       ],
-      //permission:[isdevice] check if jwt.user.type is device
+      permissions:[isDevice]
     },
   ],
 })
