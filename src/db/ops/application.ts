@@ -6,11 +6,9 @@ import make, { FindOptions } from './make'
 import type { Optional, Required } from 'utility-types'
 import { Subscription } from '@google-cloud/pubsub'
 
-export const createApplicationProps = [
-  'username','password','name','deviceType'
-] as const
+export const createApplicationProps = ['username', 'password', 'name', 'deviceType'] as const
 
-export const updateApplicationProps = ['username','name','password','subscriptionNames'] as const
+export const updateApplicationProps = ['username', 'name', 'password', 'subscriptionNames'] as const
 
 export type CreateApplicationProps = Optional<
   Pick<Required<Application>, typeof createApplicationProps[number]>
@@ -42,26 +40,33 @@ export const findApplicationByUsername = async (
   username: ApplicationDocument['username'],
   options: FindOptions = {},
 ): Promise<ApplicationDocument | null> => {
-  return ops.findOne({}, {username}, options)
+  return ops.findOne({}, { username }, options)
 }
 
 export const updateApplication = async (
   doc: ApplicationDocument,
   data: UpdateApplicationProps,
 ): Promise<ApplicationDocument | null> => {
-  return ops.update({},doc,data)
+  return ops.update({}, doc, data)
 }
 
 export const findBySubscriptionNames = async (
-  subscriptionNames:ApplicationDocument['SubscriptionName']
-): Promise<ApplicationDocument[]> =>{
-  const res =  await ops.find({},{subscriptionNames:{$in:subscriptionNames}},{select:'name subscriptionNames'})
-  return res.map(a=> {return {id:a.id, name:a.name,subscriptionNames: _.intersection(a.subscriptionNames,subscriptionNames)}} )
+  subscriptionNames: ApplicationDocument['subscriptionNames'][],
+): Promise<any> => {
+  const res = await ops.find(
+    {},
+    { subscriptionNames: { $in: subscriptionNames } },
+    { select: 'name subscriptionNames' },
+  )
+  return res.map(a => {
+    return {
+      id: a.id,
+      name: a.name,
+      subscriptionNames: _.intersection(a.subscriptionNames, subscriptionNames),
+    }
+  })
 }
 
-
-export const deleteApplication = async (
-  doc:ApplicationDocument
-): Promise<ApplicationDocument[]> =>{
-  return ops.delete({},doc)
+export const deleteApplication = async (doc: ApplicationDocument): Promise<any> => {
+  return ops.delete({}, doc)
 }
