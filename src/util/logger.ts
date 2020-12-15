@@ -1,18 +1,18 @@
-import { createLogger, format, transports } from 'winston'
-import { consoleFormat } from 'winston-console-format'
+import { createLogger, format, transports } from "winston";
+import { consoleFormat } from "winston-console-format";
 
-export default process.env.NODE_ENV === 'development'
+export default process.env.NODE_ENV === "development"
   ? console
   : createLogger({
-      level: 'silly',
+      level: "silly",
       format: format.combine(
         format.timestamp(),
         format.ms(),
         format.errors({ stack: true }),
         format.splat(),
-        format.json(),
+        format.json()
       ),
-      defaultMeta: { service: 'api' },
+      defaultMeta: { service: "api" },
       transports: [
         new transports.Console({
           format: format.combine(
@@ -20,7 +20,7 @@ export default process.env.NODE_ENV === 'development'
             format.padLevels(),
             consoleFormat({
               showMeta: true,
-              metaStrip: ['timestamp', 'service'],
+              metaStrip: ["timestamp", "service"],
               inspectOptions: {
                 depth: Infinity,
                 colors: true,
@@ -28,8 +28,8 @@ export default process.env.NODE_ENV === 'development'
                 breakLength: 120,
                 compact: Infinity,
               },
-            }),
+            })
           ),
         }),
       ],
-    })
+    });

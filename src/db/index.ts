@@ -1,10 +1,10 @@
 import config from 'config'
-import { connect as mongoConnect, disconnect as mongoDisconnect } from './mongo'
+import { connect as redisConnect, disconnect as redisDisconnect } from './redis'
 
 export const connect = async (): Promise<void> => {
-  await mongoConnect(config.get('mongo.uri'))
+  await Promise.all([redisConnect()])
 }
 
 export const disconnect = async (): Promise<void> => {
-  await mongoDisconnect()
+  await Promise.all([redisDisconnect()])
 }

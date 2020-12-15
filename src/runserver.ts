@@ -1,15 +1,23 @@
 import config from 'config'
-import server from './app'
-import logger from './util/logger'
 import * as db from './db'
-import * as pubsub from './pubsub'
-import * as cron from './cronWorker'
+import logger from './util/logger'
+import app from './server'
+import io from './socket'
+import { startCron, stopCron } from './cron'
 
 logger.info('initializing...')
+logger.warn(`ENV: ${process.env.NODE_ENV}`)
 
-Promise.all([db.connect(),pubsub.connect(),cron.startCronWorkers()]).then(() => {
+Promise.all([db.connect()]).then(() => {
   logger.info('starting server...')
-  server.listen(config.get('server.port'), () => {
-    logger.info('server started.')
+  const s = app.listen(config.get('server.port'), () => {
+    logger.info(`server started on port ${config.get('server.port')}`)
+  })
+  io.listen(s)
+  startCron()
+
+  process.on('SIGINT', async () => {
+    logger.info('server is shutting down...')
+    await Promise.all([stopCron(), db.disconnect(), io.close(), s.close()])
   })
 })
