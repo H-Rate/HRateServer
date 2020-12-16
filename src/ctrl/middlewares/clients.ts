@@ -1,4 +1,4 @@
-import { getString } from '../../db/redis'
+import { getObject, getString } from '../../db/redis'
 
 export const checkClientDetails = async (socket, next): Promise<any> => {
   if (!socket.handshake.query.name) {
@@ -10,6 +10,10 @@ export const checkClientDetails = async (socket, next): Promise<any> => {
   const deviceInternalId = await getString(socket.handshake.query.token)
   if (!deviceInternalId) {
     return next(new Error('Incorrect Token'))
+  }
+  const device = await getObject(deviceInternalId)
+  if (!device.connected) {
+    return next(new Error('Device Offline'))
   }
   return next()
 }

@@ -16,6 +16,7 @@ const clients: any[] = []
 const deviceDisconnectController = async (data): Promise<void> => {
   if (!data.id) return
   const device = await disconnectDevice(data.id)
+  await clearRoom(data.id)
   delete device[device.id]
 }
 
@@ -40,8 +41,8 @@ const deviceGetSubscribers = async (data): Promise<void> => {
   if (!data.id) return
   const socket = clients[data.id]
   if (!socket) return
-  const subscribers = await getSubscribers(data.id)
-  if (!subscribers) return
+  let subscribers = await getSubscribers(data.id)
+  if (!subscribers) subscribers = []
   socket.emit('subscriberList', { subscribers })
 }
 
@@ -64,7 +65,7 @@ const deviceUnregisterController = async (data): Promise<void> => {
   if (!socket) return
   await clearRoom(data.id)
   await removeDevice(data.id)
-  socket.emit('unRegisteAck', true)
+  socket.emit('unRegisterAck', true)
   socket.disconnect()
 }
 

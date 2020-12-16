@@ -12,7 +12,8 @@
     "start:watch": "nodemon -w src --exec ts-node src/runserver.ts",
     "clean": "rimraf dist",
     "lint": "eslint src/**/*",
-    "lint:all": "npm run tsc:no-emit && npm run lint"
+    "lint:all": "npm run tsc:no-emit && npm run lint",
+    "test": "jest --runInBand "
   },
   "repository": {
     "type": "git",
