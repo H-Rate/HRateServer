@@ -6,9 +6,5 @@
   },
   "redis": {
     "uri": "redis://localhost:6379"
-  },
-  "jwt": {
-    "secret": "[unset]",
-    "expiresIn": 604800
   }
 }

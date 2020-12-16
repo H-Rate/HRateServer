@@ -1,0 +1,9 @@
+{
+  "server": {
+    "port": "PORT",
+    "proxy": "PROXY"
+  },
+  "redis": {
+    "uri": "REDIS_URI"
+  }
+}

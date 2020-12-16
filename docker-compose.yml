@@ -1,0 +1,25 @@
+version: '3.7'
+services:
+  tournaments:
+    image: hrateserver:latest
+    restart: always
+    ports:
+      - 8000:8000
+    depends_on:
+      - redis
+    environment:
+      NODE_ENV: production
+      NODE_CONFIG_DIR: /var/app/config
+      REDIS_URI: redis://redis
+    volumes:
+      - ./config:/var/app/config:ro
+
+  redis:
+    container_name: hrateserver-redis
+    image: redis:6.0
+    restart: always
+    ports:
+      - 6379:6379
+
+volumes:
+  mongo:

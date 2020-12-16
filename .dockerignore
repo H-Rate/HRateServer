@@ -1,0 +1,16 @@
+/.git/
+/.idea/
+/.run/
+/.vscode/
+/node_modules/
+/dist/
+/types/
+/dev/
+/keys/
+/coverage/
+/config/
+/junit.xml
+*.log
+**/__test__
+dump.tar.gz
+*.sh
