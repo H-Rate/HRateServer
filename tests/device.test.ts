@@ -25,10 +25,10 @@ beforeAll(async done => {
   done()
 })
 
-// afterEach(async done => {
-//   await redisClient.flushall()
-//   done()
-// })
+afterEach(async done => {
+  await redisClient.flushall()
+  done()
+})
 
 afterAll(async done => {
   await redisDisconnect()
