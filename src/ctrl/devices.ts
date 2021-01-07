@@ -70,6 +70,7 @@ const deviceUnregisterController = async (data): Promise<void> => {
 }
 
 export const deviceConnectController = async (socket): Promise<void> => {
+  console.log("device id ", socket.handshake.query.deviceId)
   const device = await createDevice(socket.handshake.query.deviceId, socket.handshake.address)
   socket.emit('deviceRegister', device)
   clients[device.id] = socket
