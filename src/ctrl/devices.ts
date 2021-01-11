@@ -21,6 +21,7 @@ const deviceDisconnectController = async (data): Promise<void> => {
 }
 
 const deviceGenerateTokenController = async (data): Promise<void> => {
+  console.log("gen token: ", data)
   if (!data.id) return
   const token = await generateDeviceToken(data.id)
   const socket = clients[data.id]

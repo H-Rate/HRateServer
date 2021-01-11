@@ -34,13 +34,19 @@ export const setString = async (key: string, value: string): Promise<void> => {
 
 export const getObject = async (key: string): Promise<Record<string, unknown> | undefined> => {
   const value = await redisClient.get(key)
+  console.log("get object: ", key, value)
   if (value === null) return undefined
-  const jsonValue = JSON.parse(value)
-  return jsonValue
+  try {
+    const jsonValue = JSON.parse(value)
+    return jsonValue
+  } catch {
+    return undefined
+  }
 }
 
 export const getString = async (key: string): Promise<string> => {
   const value = await redisClient.get(key)
+  console.log("get string: ", key, value)
   if (value === null) return undefined
   return value
 }

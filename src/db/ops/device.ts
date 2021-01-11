@@ -48,6 +48,8 @@ export const createDevice = async (deviceId: string, address: string): Promise<D
   }
   await setObject(deviceInternalId, (device as unknown) as Record<string, unknown>)
   await setString(deviceId, deviceInternalId)
+
+  console.log("Device internal id:", deviceInternalId)
   return device
 }
 
